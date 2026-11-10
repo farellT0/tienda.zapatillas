@@ -1,0 +1,29 @@
+<div class="formulario-publico">
+    <h2 class="text-xl font-black mb-4">{{t.login_titulo}}</h2>
+
+    <form id="form_login" class="formulario">
+        <div class="campo">
+            <label for="email">{{t.email}}</label>
+            <input type="email" name="email" id="email" autocomplete="username"
+                   placeholder="nombre@ejemplo.com" required>
+        </div>
+
+        <div class="campo">
+            <label for="pass">{{t.password}}</label>
+            <input type="password" name="pass" id="pass" autocomplete="current-password" required>
+        </div>
+
+        <div class="campo">
+            <label for="recordar_email">
+                <input type="checkbox" id="recordar_email" style="width:auto">
+                {{t.recordar_email}}
+            </label>
+        </div>
+
+        <button type="submit" class="boton">{{t.continuar}}</button>
+    </form>
+    <p class="registro-invitacion">
+        {{t.sin_cuenta}}
+        <a href="#" id="ir-registro">{{t.registrate}}</a>
+    </p>
+</div>

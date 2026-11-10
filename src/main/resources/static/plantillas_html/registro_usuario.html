@@ -1,0 +1,27 @@
+<div class="formulario-publico">
+    <h2 class="text-xl font-black mb-4">{{t.registro_titulo}}</h2>
+    <form id="form_registro_usuario" class="formulario">
+        <p id="registro-error" class="mensaje-error" role="alert" hidden></p>
+        <div class="campo">
+            <label for="nombre">{{t.nombre}}</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+
+        <div class="campo">
+            <label for="email">{{t.email}}</label>
+            <input type="email" id="email" name="email" placeholder="nombre@ejemplo.com" required>
+        </div>
+
+        <div class="campo">
+            <label for="pass">{{t.password}}</label>
+            <input type="password" id="pass" name="pass" required>
+        </div>
+
+        <div class="campo">
+            <label for="avatar">{{t.avatar_opcional}}</label>
+            <input type="file" id="avatar" name="avatar" accept="image/*">
+        </div>
+
+        <button type="submit" class="boton">{{t.registrarse}}</button>
+    </form>
+</div>

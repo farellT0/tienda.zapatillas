@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tienda Online</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hiseb/confetti@2.2.0/dist/confetti.min.js"></script>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="bg-stone-100 text-stone-900">
+
+<!-- la parte publica sera una SPA Single Page Application-->
+<!-- El javascript de esta unica pagina gestionará -->
+<!-- lo que usuario necesite-->
+
+<header class="bg-stone-900 text-white">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
+        <button id="zapatillas" type="button" class="text-3xl sm:text-4xl font-black tracking-tight">
+            SNEAKER<span class="text-orange-500">HOUSE</span>
+        </button>
+        <div class="flex items-center gap-3 text-xs text-stone-400">
+            <label for="idioma-publico" class="sr-only">Idioma</label>
+            <select id="idioma-publico" class="bg-stone-800 text-white rounded px-2 py-1"
+                    onchange="window.location.search='?idioma='+this.value">
+                <option value="es" th:selected="${#locale.language == 'es'}">español</option>
+                <option value="en" th:selected="${#locale.language == 'en'}">english</option>
+                <option value="fr" th:selected="${#locale.language == 'fr'}">français</option>
+            </select>
+            <a class="hover:text-white" href="admin/inicioAdmin" th:text="#{acceso.admin}">acceso a administracion</a>
+        </div>
+    </div>
+    <nav class="menu-publico max-w-6xl mx-auto px-4 pb-3 flex items-center justify-end gap-3 text-sm"
+         aria-label="Navegación de cuenta">
+        <img id="avatar-usuario" class="avatar_usuario" alt="Avatar" hidden
+             onerror="this.hidden = true">
+        <div class="cuenta-listas">
+            <button id="cuenta-listas" type="button" aria-haspopup="true"
+                    th:text="#{menu.cuenta_listas}">Cuenta y listas</button>
+            <div class="cuenta-listas__opciones">
+                <button id="mis_datos" type="button" th:text="#{menu.mis_datos}">Mis datos</button>
+                <button id="identificarme" type="button" th:text="#{menu.identificarme}">Identificarme</button>
+                <button id="carrito" type="button" th:text="#{menu.carrito}">Mi carrito</button>
+                <button id="pedidos-menu" type="button" th:text="#{menu.pedidos}">Pedidos</button>
+                <button id="cerrar_sesion" type="button" th:text="#{menu.cerrar_sesion}" hidden>Cerrar sesión</button>
+            </div>
+        </div>
+        <button id="pedidos" type="button" class="boton-pedidos"
+                th:attr="aria-label=#{menu.pedidos}">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+            </svg>
+            <span th:text="#{menu.pedidos}">Pedidos</span>
+        </button>
+    </nav>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+    <div class="text-sm text-stone-500 mb-4" th:text="#{frase.bienvenida}">Los verdaderos fans de las zapatillas están registrados en esta web</div>
+    <div id="contenedor"></div>
+</main>
+
+<script src="librerias_js/jquery.js"></script>
+<script src="librerias_js/mustache.js"></script>
+<script src="javascript/validaciones.js"></script>
+<script th:inline="javascript">
+    const T = {
+        buscar_label: /*[[#{p.buscar_label}]]*/ "",
+        resultados: /*[[#{p.resultados}]]*/ "",
+        anterior: /*[[#{p.anterior}]]*/ "",
+        siguiente: /*[[#{p.siguiente}]]*/ "",
+        color: /*[[#{p.color}]]*/ "",
+        categoria: /*[[#{p.categoria}]]*/ "",
+        genero: /*[[#{p.genero}]]*/ "",
+        ver_detalles: /*[[#{p.ver_detalles}]]*/ "",
+        talla: /*[[#{p.talla}]]*/ "",
+        talla_eu: /*[[#{p.talla_eu}]]*/ "",
+        cantidad: /*[[#{p.cantidad}]]*/ "",
+        cantidad_dos_puntos: /*[[#{p.cantidad_dos_puntos}]]*/ "",
+        anadir: /*[[#{p.anadir}]]*/ "",
+        anadir_carrito: /*[[#{p.anadir_carrito}]]*/ "",
+        imagen: /*[[#{p.imagen}]]*/ "",
+        comentarios: /*[[#{p.comentarios}]]*/ "",
+        login_para_comentar: /*[[#{p.login_para_comentar}]]*/ "",
+        identificarme: /*[[#{p.identificarme}]]*/ "",
+        comentario_placeholder: /*[[#{p.comentario_placeholder}]]*/ "",
+        comentario: /*[[#{p.comentario}]]*/ "",
+        publicar_comentario: /*[[#{p.publicar_comentario}]]*/ "",
+        sin_comentarios: /*[[#{p.sin_comentarios}]]*/ "",
+        err_cargar_comentarios: /*[[#{p.err_cargar_comentarios}]]*/ "",
+        err_publicar_comentario: /*[[#{p.err_publicar_comentario}]]*/ "",
+        err_cargar_zapatillas: /*[[#{p.err_cargar_zapatillas}]]*/ "",
+        carrito_titulo: /*[[#{p.carrito_titulo}]]*/ "",
+        carrito_vacio: /*[[#{p.carrito_vacio}]]*/ "",
+        eliminar: /*[[#{p.eliminar}]]*/ "",
+        total: /*[[#{p.total}]]*/ "",
+        realizar_pedido: /*[[#{p.realizar_pedido}]]*/ "",
+        err_eliminar: /*[[#{p.err_eliminar}]]*/ "",
+        err_anadir: /*[[#{p.err_anadir}]]*/ "",
+        cantidad_invalida: /*[[#{p.cantidad_invalida}]]*/ "",
+        identificate_primero: /*[[#{p.identificate_primero}]]*/ "",
+        envio_titulo: /*[[#{p.envio_titulo}]]*/ "",
+        nombre_completo: /*[[#{p.nombre_completo}]]*/ "",
+        direccion: /*[[#{p.direccion}]]*/ "",
+        provincia: /*[[#{p.provincia}]]*/ "",
+        telefono: /*[[#{p.telefono}]]*/ "",
+        codigo_postal: /*[[#{p.codigo_postal}]]*/ "",
+        ciudad: /*[[#{p.ciudad}]]*/ "",
+        continuar: /*[[#{p.continuar}]]*/ "",
+        prefijo_aria: /*[[#{p.prefijo_aria}]]*/ "",
+        pago_titulo: /*[[#{p.pago_titulo}]]*/ "",
+        tipo_tarjeta: /*[[#{p.tipo_tarjeta}]]*/ "",
+        selecciona_tarjeta: /*[[#{p.selecciona_tarjeta}]]*/ "",
+        numero_tarjeta: /*[[#{p.numero_tarjeta}]]*/ "",
+        titular: /*[[#{p.titular}]]*/ "",
+        fecha_caducidad: /*[[#{p.fecha_caducidad}]]*/ "",
+        formato_fecha: /*[[#{p.formato_fecha}]]*/ "",
+        resumen_titulo: /*[[#{p.resumen_titulo}]]*/ "",
+        zapatillas: /*[[#{p.zapatillas}]]*/ "",
+        producto: /*[[#{p.producto}]]*/ "",
+        subtotal: /*[[#{p.subtotal}]]*/ "",
+        caducidad: /*[[#{p.caducidad}]]*/ "",
+        confirmar_pedido: /*[[#{p.confirmar_pedido}]]*/ "",
+        completa_campos: /*[[#{p.completa_campos}]]*/ "",
+        provincia_letras: /*[[#{p.provincia_letras}]]*/ "",
+        ciudad_letras: /*[[#{p.ciudad_letras}]]*/ "",
+        telefono_9: /*[[#{p.telefono_9}]]*/ "",
+        cp_5: /*[[#{p.cp_5}]]*/ "",
+        fecha_formato: /*[[#{p.fecha_formato}]]*/ "",
+        tarjeta_digitos: /*[[#{p.tarjeta_digitos}]]*/ "",
+        err_guardar_envio: /*[[#{p.err_guardar_envio}]]*/ "",
+        err_guardar_pago: /*[[#{p.err_guardar_pago}]]*/ "",
+        err_resumen: /*[[#{p.err_resumen}]]*/ "",
+        err_confirmar: /*[[#{p.err_confirmar}]]*/ "",
+        mi_cuenta: /*[[#{p.mi_cuenta}]]*/ "",
+        nombre: /*[[#{p.nombre}]]*/ "",
+        email: /*[[#{p.email}]]*/ "",
+        mis_pedidos: /*[[#{p.mis_pedidos}]]*/ "",
+        sin_pedidos: /*[[#{p.sin_pedidos}]]*/ "",
+        pedido: /*[[#{p.pedido}]]*/ "",
+        err_cargar_pedidos: /*[[#{p.err_cargar_pedidos}]]*/ "",
+        err_cerrar_sesion: /*[[#{p.err_cerrar_sesion}]]*/ "",
+        estado_EnProceso: /*[[#{p.estado_EnProceso}]]*/ "",
+        estado_Completado: /*[[#{p.estado_Completado}]]*/ "",
+        estado_Enviado: /*[[#{p.estado_Enviado}]]*/ "",
+        estado_Incidencia: /*[[#{p.estado_Incidencia}]]*/ "",
+        login_titulo: /*[[#{p.login_titulo}]]*/ "",
+        password: /*[[#{p.password}]]*/ "",
+        recordar_email: /*[[#{p.recordar_email}]]*/ "",
+        sin_cuenta: /*[[#{p.sin_cuenta}]]*/ "",
+        registrate: /*[[#{p.registrate}]]*/ "",
+        registro_titulo: /*[[#{p.registro_titulo}]]*/ "",
+        registrarse: /*[[#{p.registrarse}]]*/ "",
+        avatar_opcional: /*[[#{p.avatar_opcional}]]*/ "",
+        email_pass_incorrectos: /*[[#{p.email_pass_incorrectos}]]*/ "",
+        nombre_invalido: /*[[#{p.nombre_invalido}]]*/ ""
+    }
+</script>
+<script>
+
+    //variables globales
+    let nombre_login = "" // nombre del usuario tras identificarse correctamente
+    let email_login = ""
+    let destino_pendiente = "cuenta"
+    let zapatilla_pendiente_comentario = null
+
+    // parte de descarga de plantillas html
+    let plantilla_productos = ""
+    let plantilla_detalles_producto = ""
+    let plantilla_carrito = ""
+    let plantilla_checkout_1 = ""
+    let plantilla_checkout_2 = ""
+    let plantilla_checkout_4 = ""
+    $.get("plantillas_html/registro_usuario.html").done(function(res){
+        plantilla_registro_usuario = res
+    })
+    $.get("plantillas_html/identificar_usuario.html").done(function(res){
+        plantilla_login_usuario = res
+    })
+
+    function pintar(plantilla, datos){
+        return Mustache.render(plantilla, Object.assign({t: T}, datos || {}))
+    }
+
+    function textoEstado(estado){
+        return T["estado_" + estado] || estado
+    }
+
+    // preparar el precio y la talla para mostrarlos con coma
+    function preparar(z){
+        z.precioTexto = z.precio.toFixed(2).replace(".", ",")
+        z.tallaTexto = String(z.talla).replace(".", ",")
+        z.opcionesTalla = Array.from({length: 27}, function(_, index) {
+            const talla = 35 + index * 0.5
+            return {
+                valor: talla,
+                texto: String(talla).replace(".", ","),
+                seleccionada: talla === Number(z.talla)
+            }
+        })
+        return z
+    }
+
+    let texto_a_buscar = ""
+    let comienzo_resultados = 0
+    let enfocar_buscador = false
+    let ultimaConsultaZapatillas = 0
+    const RESULTADOS_POR_PAGINA = 10
+
+    function mostrar_zapatillas(){
+        const consulta = ++ultimaConsultaZapatillas
+        $.getJSON("restZapatillas/listar", {
+            texto: texto_a_buscar,
+            comienzo: comienzo_resultados
+        }).done(function(json){
+            if (consulta !== ultimaConsultaZapatillas) {
+                return
+            }
+            const resultadoMustache = pintar(plantilla_productos, {
+                zapatillas: json.zapatillas.map(preparar)
+            })
+            $("#contenedor").html(resultadoMustache)
+            $("#total_resultados").text(json.totalZapatillas)
+            $("#enlace_anterior").toggle(comienzo_resultados > 0)
+            $("#enlace_siguiente").toggle(
+                comienzo_resultados + RESULTADOS_POR_PAGINA < json.totalZapatillas)
+            const buscador = document.getElementById("texto_buscador")
+            buscador.value = texto_a_buscar
+            if (enfocar_buscador) {
+                buscador.focus()
+                buscador.setSelectionRange(texto_a_buscar.length, texto_a_buscar.length)
+                enfocar_buscador = false
+            }
+        }).fail(function(xhr){
+            if (consulta === ultimaConsultaZapatillas) {
+                alert(xhr.responseText || T.err_cargar_zapatillas)
+            }
+        })
+    }//end mostrar_zapatillas
+
+    $("#contenedor").on("keyup", "#texto_buscador", function(){
+        texto_a_buscar = $(this).val()
+        comienzo_resultados = 0
+        enfocar_buscador = true
+        mostrar_zapatillas()
+    })
+    $("#contenedor").on("click", "#enlace_anterior", function(e){
+        e.preventDefault()
+        comienzo_resultados = Math.max(0, comienzo_resultados - RESULTADOS_POR_PAGINA)
+        mostrar_zapatillas()
+    })
+    $("#contenedor").on("click", "#enlace_siguiente", function(e){
+        e.preventDefault()
+        comienzo_resultados += RESULTADOS_POR_PAGINA
+        mostrar_zapatillas()
+    })
+
+    function mostrar_detalles(id){
+        $.getJSON("restZapatillas/obtener-zapatilla",
+                {
+                    id : id
+                }
+            ).done(
+                function(json){
+                    console.log(json)
+                    json.numerosImagenes = Array.from(
+                        {length: json.numeroImagenes},
+                        function(_, index){ return index + 1 }
+                    )
+                    resultadoHtml = pintar(plantilla_detalles_producto, preparar(json))
+                    $("#contenedor").html(resultadoHtml)
+                    actualizar_acceso_comentarios()
+                    cargar_comentarios(json.id)
+                }
+            )//end done
+    }//end mostrar_detalles
+
+    function actualizar_acceso_comentarios(){
+        const identificado = Boolean(nombre_login)
+        $("#form-comentario").prop("hidden", !identificado)
+        $("#comentario-login-requerido").prop("hidden", identificado)
+    }
+
+    $("#contenedor").on("click", "#identificarse-para-comentar", function(){
+        zapatilla_pendiente_comentario = Number($("#form-comentario").data("id"))
+        mostrar_login()
+    })
+
+    function continuar_despues_de_identificar(){
+        $("#cerrar_sesion").prop("hidden", false)
+        cargar_avatar()
+        if (zapatilla_pendiente_comentario !== null) {
+            const idZapatilla = zapatilla_pendiente_comentario
+            zapatilla_pendiente_comentario = null
+            mostrar_detalles(idZapatilla)
+            return
+        }
+        ejecutar_destino_pendiente()
+    }
+
+    function cargar_comentarios(idZapatilla){
+        $.getJSON("restComentarios/listar", {idZapatilla: idZapatilla}).done(function(comentarios){
+            const $lista = $("#lista-comentarios").empty()
+            if (comentarios.length === 0) {
+                $lista.append($("<p>", {class: "text-sm text-stone-500"})
+                    .text(T.sin_comentarios))
+                return
+            }
+            comentarios.forEach(function(comentario){
+                const $comentario = $("<article>", {class: "border-b border-stone-200 pb-2"})
+                $comentario.append($("<div>", {class: "text-sm font-bold"}).text(comentario.nombre))
+                $comentario.append($("<div>", {class: "text-xs text-stone-500"}).text(comentario.fecha))
+                $comentario.append($("<p>", {class: "text-sm mt-1 whitespace-pre-line"}).text(comentario.texto))
+                $lista.append($comentario)
+            })
+        }).fail(function(xhr){
+            $("#lista-comentarios").empty().append(
+                $("<p>", {class: "text-sm text-red-700", role: "alert"})
+                    .text(xhr.responseText || T.err_cargar_comentarios)
+            )
+        })
+    }
+
+    $("#contenedor").on("submit", "#form-comentario", function(e){
+        e.preventDefault()
+        const idZapatilla = $(this).data("id")
+        $.post("restComentarios/agregar", {
+            idZapatilla: idZapatilla,
+            texto: $("#texto-comentario").val()
+        }).done(function(){
+            $("#texto-comentario").val("")
+            $("#comentario-error").text("")
+            cargar_comentarios(idZapatilla)
+        }).fail(function(xhr){
+            $("#comentario-error").text(xhr.responseText || T.err_publicar_comentario)
+        })
+    })
+
+    // parte de atencion a enlaces
+
+    $("#zapatillas").click(mostrar_zapatillas)
+
+    $("#cuenta-listas, #identificarme").click(function(e){
+        e.preventDefault()
+        irAIdentificarme("cuenta")
+    })
+
+    $("#carrito").click(function(e){
+        e.preventDefault()
+        irAIdentificarme("carrito")
+    })
+
+    $("#pedidos-menu").click(function(e){
+        e.preventDefault()
+        irAIdentificarme("pedidos")
+    })
+
+    $("#mis_datos").click(function(e){
+        e.preventDefault()
+        irAIdentificarme("mis_datos")
+    })
+
+    $("#pedidos").click(function(e){
+        e.preventDefault()
+        irAIdentificarme("pedidos")
+    })
+
+    function irAIdentificarme(destino){
+        destino_pendiente = destino
+        if (nombre_login) {
+            ejecutar_destino_pendiente()
+        } else {
+            mostrar_login()
+        }
+    }
+
+    function ejecutar_destino_pendiente(){
+        const destino = destino_pendiente
+        destino_pendiente = "cuenta"
+        if (destino === "carrito") {
+            mostrar_carrito()
+        } else if (destino === "pedidos") {
+            mostrar_pedidos()
+        } else {
+            mostrar_mis_datos()
+        }
+    }
+
+    function mostrar_mis_datos(){
+        $("#contenedor").html(
+            '<section class="cuenta-resumen"><h1>' + T.mi_cuenta + '</h1><p class="cuenta-resumen__nombre"></p>' +
+            '<p class="cuenta-resumen__email"></p></section>'
+        )
+        $(".cuenta-resumen__nombre").text(T.nombre + ": " + nombre_login)
+        $(".cuenta-resumen__email").text(T.email + ": " + email_login)
+    }
+
+    function mostrar_pedidos(){
+        $.getJSON("restPedidos/misPedidos").done(function(pedidos){
+            const $contenedor = $("<section>", {class: "pedidos-usuario"})
+            $contenedor.append($("<h1>").text(T.mis_pedidos))
+            if (pedidos.length === 0) {
+                $contenedor.append($("<p>").text(T.sin_pedidos))
+            }
+            pedidos.forEach(function(pedido){
+                const $pedido = $("<article>", {class: "pedido-usuario"})
+                $pedido.append($("<h2>").text(T.pedido + " #" + pedido.id + " · " + textoEstado(pedido.estado)))
+                const $productos = $("<ul>")
+                pedido.productos.forEach(function(producto){
+                    $productos.append($("<li>").text(
+                        producto.marca + " " + producto.modelo + " · " + T.talla + " " +
+                        String(producto.talla).replace(".", ",") + " · " + T.cantidad + " " + producto.cantidad
+                    ))
+                })
+                $pedido.append($productos)
+                $contenedor.append($pedido)
+            })
+            $("#contenedor").empty().append($contenedor)
+        }).fail(function(xhr){
+            alert(xhr.responseText || T.err_cargar_pedidos)
+        })
+    }
+
+    $("#cerrar_sesion").click(function(){
+        $.post("restUsuarios/cerrarSesion").done(function(){
+            nombre_login = ""
+            email_login = ""
+            $("#cerrar_sesion").prop("hidden", true)
+            $("#avatar-usuario").prop("hidden", true).removeAttr("src")
+            mostrar_zapatillas()
+        }).fail(function(xhr){
+            alert(xhr.responseText || T.err_cerrar_sesion)
+        })
+    })
+
+    function mostrar_formulario_registro_usuario(){
+        $("#contenedor").html(pintar(plantilla_registro_usuario))
+        // una vez mostrado el form de registro
+        // vamos a decir que va a pasar cuando se haga click en Registrarse
+        $("#form_registro_usuario").submit(
+            function(e){
+                e.preventDefault()
+                if (!validarNombre($("#nombre").val())) {
+                    return
+                }
+                const formulario = this
+                const formData = new FormData(formulario)
+                $("#registro-error").prop("hidden", true).text("")
+                $.ajax("restUsuarios/registrarUsuario",{
+                    type : "POST",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (res){
+                        if (typeof res === "string" && res.startsWith("ok,")) {
+                            nombre_login = res.substring(3)
+                            email_login = $("#email").val()
+                            lanzarConfeti()
+                            continuar_despues_de_identificar()
+                        } else {
+                            $("#registro-error").text(res || T.email_pass_incorrectos).prop("hidden", false)
+                        }
+                    },
+                    error: function(xhr){
+                        $("#registro-error")
+                            .text(xhr.responseText || T.email_pass_incorrectos)
+                            .prop("hidden", false)
+                    }
+                })
+            }
+        )
+    }// end mostrar...
+
+    function cargar_avatar(){
+        $.getJSON("restUsuarios/sesion").done(function(usuario){
+            if (usuario.identificado) {
+                $("#avatar-usuario")
+                    .attr("src", "mostrar_imagen_usuario?id=" + usuario.id + "&t=" + Date.now())
+                    .prop("hidden", false)
+            }
+        })
+    }
+
+    function mostrar_login(){
+        $("#contenedor").html(pintar(plantilla_login_usuario))
+        try {
+            const emailGuardado = localStorage.getItem("email_recordado")
+            if (emailGuardado) {
+                $("#form_login [name=email]").val(emailGuardado)
+                $("#recordar_email").prop("checked", true)
+            }
+        } catch (e) {}
+        $("#ir-registro").click(function(e){
+            e.preventDefault()
+            mostrar_formulario_registro_usuario()
+        })
+        $("#form_login").submit(
+            function (e){
+                e.preventDefault()
+                $.post("restUsuarios/identificarUsuario",
+                    {
+                        email: $("#email").val(),
+                        pass: $("#pass").val()
+                    }
+                ).done(function (res){
+                    if (res.startsWith("ok,")) {
+                        nombre_login = res.substring(3)
+                        email_login = $("#form_login [name=email]").val()
+                        try {
+                            if ($("#recordar_email").prop("checked")) {
+                                localStorage.setItem("email_recordado", email_login)
+                            } else {
+                                localStorage.removeItem("email_recordado")
+                            }
+                        } catch (e) {}
+                        continuar_despues_de_identificar()
+                    } else {
+                        nombre_login = ""
+                        alert(res || T.email_pass_incorrectos)
+                    }
+                }).fail(function(xhr){
+                    alert(xhr.responseText || T.email_pass_incorrectos)
+                })
+
+            }//end function
+        )//end submit
+    }//end mostrar_login
+
+    function agregarProductoCarrito(idProducto, idCampoCantidad, idCampoTalla){
+        if ( nombre_login == "" ){
+            alert(T.identificate_primero)
+            return
+        }
+        const cantidad = Number(document.getElementById(idCampoCantidad).value)
+        if (!Number.isInteger(cantidad) || cantidad < 1) {
+            alert(T.cantidad_invalida)
+            return
+        }
+        const talla = Number(document.getElementById(idCampoTalla).value)
+        $.post("restCarrito/agregarProducto",{
+            id: idProducto,
+            cantidad: cantidad,
+            talla: String(talla)
+        }).done(function(res){
+            alert(res)
+        }).fail(function(xhr){
+            alert(xhr.responseText || T.err_anadir)
+        })
+    }//end agregarProductoCarrito
+
+    function mostrar_carrito(){
+        if ( nombre_login == "" ){
+            irAIdentificarme("carrito")
+            return
+        }
+        $.getJSON("restCarrito/listar").done(function(json){
+            if (json.length == 0) {
+                $("#contenedor").html("<div>" + T.carrito_vacio + "</div>")
+                return
+            }
+            let total = 0
+            json.forEach(function(producto){
+                let subtotal = producto.precio * producto.cantidad
+                total += subtotal
+                producto.tallaTexto = String(producto.talla).replace(".", ",")
+                producto.subtotalTexto = subtotal.toFixed(2).replace(".", ",")
+            })
+            $("#contenedor").html(pintar(plantilla_carrito, {
+                productos: json,
+                totalTexto: total.toFixed(2).replace(".", ","),
+                hayProductos: json.length > 0
+            }))
+        })
+    }
+
+    $("#contenedor").on("click", "#realizar_pedido", mostrar_checkout_paso1)
+
+    function mostrar_checkout_paso1(){
+        $("#contenedor").html(pintar(plantilla_checkout_1))
+        // provincia y ciudad: solo letras (y espacios entre palabras)
+        $("#checkout-provincia, #checkout-ciudad").on("input", function(){
+            this.value = this.value.replace(/[^\p{L} ]/gu, "")
+        })
+        $("#checkout-paso1").submit(function(e){
+            e.preventDefault()
+            const formulario = this
+            const campos = formulario.querySelectorAll("[required]")
+            for (const campo of campos) {
+                if (!campo.value.trim()) {
+                    $("#checkout-error").text(T.completa_campos)
+                    campo.focus()
+                    return
+                }
+            }
+            if (!validarNombre($("#checkout-nombre").val())) {
+                return
+            }
+            const soloLetras = /^\p{L}+( \p{L}+)*$/u
+            if (!soloLetras.test($("#checkout-provincia").val().trim())) {
+                $("#checkout-error").text(T.provincia_letras)
+                $("#checkout-provincia").focus()
+                return
+            }
+            if (!soloLetras.test($("#checkout-ciudad").val().trim())) {
+                $("#checkout-error").text(T.ciudad_letras)
+                $("#checkout-ciudad").focus()
+                return
+            }
+            if (!/^\d{9}$/.test($("#checkout-telefono").val())) {
+                $("#checkout-error").text(T.telefono_9)
+                $("#checkout-telefono").focus()
+                return
+            }
+            if (!/^\d{5}$/.test($("#checkout-codigo-postal").val())) {
+                $("#checkout-error").text(T.cp_5)
+                $("#checkout-codigo-postal").focus()
+                return
+            }
+            $.post("restPedidos/paso1", $(formulario).serialize())
+                .done(mostrar_checkout_paso2)
+                .fail(function(xhr){
+                    $("#checkout-error").text(xhr.responseText || T.err_guardar_envio)
+                })
+        })
+    }
+
+    function mostrar_checkout_paso2(){
+        $("#contenedor").html(pintar(plantilla_checkout_2))
+        $("#checkout-paso2").submit(function(e){
+            e.preventDefault()
+            const formulario = this
+            const campos = formulario.querySelectorAll("[required]")
+            for (const campo of campos) {
+                if (!campo.value.trim()) {
+                    $("#checkout-error").text(T.completa_campos)
+                    campo.focus()
+                    return
+                }
+            }
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test($("#checkout-fecha-caducidad").val())) {
+                $("#checkout-error").text(T.fecha_formato)
+                $("#checkout-fecha-caducidad").focus()
+                return
+            }
+            if (!/^\d{13,19}$/.test($("#checkout-numero").val().trim())) {
+                $("#checkout-error").text(T.tarjeta_digitos)
+                $("#checkout-numero").focus()
+                return
+            }
+            $.post("restPedidos/paso2", $(formulario).serialize())
+                .done(mostrar_resumen_pedido)
+                .fail(function(xhr){
+                    $("#checkout-error").text(xhr.responseText || T.err_guardar_pago)
+                })
+        })
+    }
+
+    function mostrar_resumen_pedido(){
+        $.getJSON("restPedidos/resumen").done(function(resumen){
+            $("#contenedor").html(pintar(plantilla_checkout_4, resumen))
+        }).fail(function(xhr){
+            $("#contenedor").html('<p id="checkout-error" class="text-sm text-red-700" role="alert"></p>')
+            $("#checkout-error").text(xhr.responseText || T.err_resumen)
+        })
+    }
+
+    $("#contenedor").on("click", "#confirmar-pedido", function(){
+        $.post("restPedidos/confirmar").done(function(res){
+            lanzarConfeti()
+            alert(res)
+            mostrar_zapatillas()
+        }).fail(function(xhr){
+            $("#checkout-error").text(xhr.responseText || T.err_confirmar)
+        })
+    })
+
+    // confeti de celebracion (libreria confetti.min.js); si no carga, no pasa nada
+    function lanzarConfeti(){
+        if (typeof confetti === "function") {
+            confetti()
+        }
+    }
+
+    function eliminarProductoCarrito(idLinea){
+        $.post("restCarrito/eliminarProducto", {idLinea: idLinea}).done(function(res){
+            if (res !== "Producto eliminado del carrito.") {
+                alert(res)
+            }
+            mostrar_carrito()
+        }).fail(function(xhr){
+            alert(xhr.responseText || T.err_eliminar)
+        })
+    }
+
+    // descargamos las plantillas y cuando esten,
+    // por defecto cuando se acceda a la web
+    // que muestre las zapatillas de la tienda:
+    $.when(
+        $.get("plantillas_html/listado_productos.html"),
+        $.get("plantillas_html/detalles_producto.html"),
+        $.get("plantillas_html/carrito.html"),
+        $.get("plantillas_html/check_out_1.html"),
+        $.get("plantillas_html/check_out_2.html"),
+        $.get("plantillas_html/check_out_4.html")
+    ).done(function(r1, r2, r3, r4, r5, r6){
+        plantilla_productos = r1[0]
+        plantilla_detalles_producto = r2[0]
+        plantilla_carrito = r3[0]
+        plantilla_checkout_1 = r4[0]
+        plantilla_checkout_2 = r5[0]
+        plantilla_checkout_4 = r6[0]
+        mostrar_zapatillas()
+    })
+
+    $.getJSON("restUsuarios/sesion").done(function(usuario){
+        if (usuario.identificado) {
+            nombre_login = usuario.nombre
+            email_login = usuario.email
+            $("#cerrar_sesion").prop("hidden", false)
+            cargar_avatar()
+            actualizar_acceso_comentarios()
+        }
+    }).fail(function(xhr){
+        console.error("No se pudo comprobar la sesión del usuario.", xhr)
+    })
+</script>
+
+
+</body>
+</html>

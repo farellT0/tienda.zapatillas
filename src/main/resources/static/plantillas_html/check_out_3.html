@@ -1,0 +1,28 @@
+<section>
+    <h2 class="text-xl font-black mb-4">PREFERENCIAS DEL PEDIDO</h2>
+    <form id="checkout-paso3" class="formulario" novalidate>
+        <div class="campo">
+            <label for="checkout-uso-principal">Uso principal de las zapatillas</label>
+            <select id="checkout-uso-principal" name="usoPrincipal" required>
+                <option value="">Selecciona un uso</option>
+                <option value="Running">Running</option>
+                <option value="Uso diario">Uso diario</option>
+                <option value="Skate">Skate</option>
+                <option value="Baloncesto">Baloncesto</option>
+                <option value="Coleccionismo">Coleccionismo</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label>
+                <input name="embalajeRegalo" type="checkbox" value="true">
+                ¿Quieres caja original y embalaje de regalo?
+            </label>
+        </div>
+        <div class="campo">
+            <label for="checkout-comentarios">Comentarios para el envío (opcional)</label>
+            <textarea id="checkout-comentarios" name="comentarios"></textarea>
+        </div>
+        <p id="checkout-error" class="text-sm text-red-700" role="alert"></p>
+        <button class="boton" type="submit">CONTINUAR</button>
+    </form>
+</section>

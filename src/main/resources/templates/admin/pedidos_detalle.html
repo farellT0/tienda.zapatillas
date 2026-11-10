@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_detalle_pedido}">Detalle del pedido</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1><span th:text="#{a.pedido_num}">Pedido #</span><span th:text="${pedido.id}"></span></h1>
+
+    <section class="formulario mb-4">
+        <h2 th:text="#{a.datos_envio}">Datos de envío</h2>
+        <p><strong th:text="#{a.nombre_completo_dp}">Nombre completo:</strong> <span th:text="${pedido.nombreCompleto}"></span></p>
+        <p><strong th:text="#{a.direccion_dp}">Dirección:</strong> <span th:text="${pedido.direccion}"></span></p>
+        <p><strong th:text="#{a.codigo_postal}">Código postal:</strong> <span th:text="${pedido.codigoPostal}"></span></p>
+        <p><strong th:text="#{a.ciudad}">Ciudad:</strong> <span th:text="${pedido.ciudad}"></span></p>
+        <p><strong th:text="#{a.provincia}">Provincia:</strong> <span th:text="${pedido.provincia}"></span></p>
+        <p><strong th:text="#{a.telefono}">Teléfono:</strong> <span th:text="${pedido.telefono}"></span></p>
+    </section>
+
+    <section class="formulario mb-4">
+        <h2 th:text="#{a.datos_pago}">Datos de pago</h2>
+        <p><strong th:text="#{a.tipo_tarjeta}">Tipo de tarjeta:</strong> <span th:text="${pedido.tipoTarjeta}"></span></p>
+        <p><strong th:text="#{a.numero}">Número:</strong> <span th:text="${numeroTarjetaEnmascarado}"></span></p>
+        <p><strong th:text="#{a.titular}">Titular:</strong> <span th:text="${pedido.titularTarjeta}"></span></p>
+        <p><strong th:text="#{a.caducidad}">Fecha de caducidad:</strong> <span th:text="${pedido.fechaCaducidad}"></span></p>
+    </section>
+
+    <h2 th:text="#{a.productos_pedido}">Productos del pedido</h2>
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th th:text="#{a.marca_modelo}">Marca / Modelo</th>
+                <th th:text="#{a.talla_cap}">Talla</th>
+                <th th:text="#{a.precio_unidad}">Precio / unidad</th>
+                <th th:text="#{a.cantidad}">Cantidad</th>
+                <th th:text="#{a.subtotal}">Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="linea : ${pedido.productosPedido}">
+                <td>
+                    <strong th:text="${linea.zapatilla.marca}"></strong>
+                    <span th:text="${linea.zapatilla.modelo}"></span>
+                </td>
+                <td th:text="${linea.talla}"></td>
+                <td th:text="${#numbers.formatDecimal(linea.zapatilla.precio, 1, 2, 'COMMA')} + ' €'"></td>
+                <td th:text="${linea.cantidad}"></td>
+                <td th:text="${#numbers.formatDecimal(linea.zapatilla.precio * linea.cantidad, 1, 2, 'COMMA')} + ' €'"></td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pedido.productosPedido)}">
+                <td colspan="5" th:text="#{a.pedido_sin_productos}">Este pedido no tiene productos.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <p><strong th:text="#{a.total}">Total:</strong> <span th:text="${#numbers.formatDecimal(totalPedido, 1, 2, 'COMMA')}"></span> €</p>
+
+    <form class="formulario mt-4" th:action="@{/admin/actualizarEstadoPedido}" method="post">
+        <input type="hidden" name="id" th:value="${pedido.id}">
+        <div class="campo">
+            <label for="estado" th:text="#{a.estado_pedido}">Estado del pedido</label>
+            <select id="estado" name="estado">
+                <option th:each="estado : ${estadosPedido}"
+                        th:value="${estado}"
+                        th:text="#{${'a.estado_' + estado}}"
+                        th:selected="${estado == pedido.estado}"></option>
+            </select>
+        </div>
+        <button class="boton" type="submit" th:text="#{a.actualizar_estado}">ACTUALIZAR ESTADO</button>
+    </form>
+
+    <p class="mt-4"><a class="boton boton--gris" th:href="@{/admin/gestionarPedidos}" th:text="#{a.volver_pedidos}">Volver a pedidos</a></p>
+</div>
+
+</body>
+</html>

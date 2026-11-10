@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_editar}">Editar zapatilla</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_editar}">Modifica los datos del producto</h1>
+
+    <form class="formulario" action="#" th:action="guardarCambiosZapatilla" th:object="${zapatillaEditar}"
+          method="post" enctype="multipart/form-data">
+
+        <div class="fila">
+            <div class="campo">
+                <label th:text="#{a.marca}">marca</label>
+                <input type="text" th:field="*{marca}">
+                <span class="error" th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}"></span>
+            </div>
+            <div class="campo">
+                <label th:text="#{a.modelo}">modelo</label>
+                <input type="text" th:field="*{modelo}">
+                <span class="error" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></span>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="campo">
+                <label th:text="#{a.precio}">precio</label>
+                <input type="text" th:field="*{precio}">
+                <span class="error" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></span>
+            </div>
+            <div class="campo">
+                <label th:text="#{a.talla}">talla</label>
+                <input type="text" th:field="*{talla}">
+                <span class="error" th:if="${#fields.hasErrors('talla')}" th:errors="*{talla}"></span>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="campo">
+                <label th:text="#{a.color}">color</label>
+                <input type="text" th:field="*{color}">
+                <span class="error" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></span>
+            </div>
+            <div class="campo">
+                <label th:text="#{a.genero}">genero</label>
+                <input type="text" th:field="*{genero}">
+                <span class="error" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></span>
+            </div>
+        </div>
+
+        <div class="campo">
+            <label th:text="#{a.categoria}">categoria</label>
+            <select th:field="*{idCategoria}">
+                <option th:each="c : ${categorias}" th:text="${c.nombre}" th:value="${c.id}"></option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label th:text="#{a.descripcion}">descripcion</label>
+            <input type="text" th:field="*{descripcion}">
+        </div>
+
+        <div class="campo">
+            <label th:text="#{a.imagenes_actuales}">Imágenes actuales</label>
+            <div id="previsualizacion-imagenes" class="imagenes-actuales">
+                <img th:each="numero : ${numerosImagenes}"
+                     th:src="@{/mostrar_imagen(id=${zapatillaEditar.id},numero=${numero})}"
+                     th:alt="#{a.imagen_actual_alt}" alt="Imagen actual de la zapatilla" data-preview-existing>
+            </div>
+        </div>
+
+        <div class="campo">
+            <label for="fotosSubidas" th:text="#{a.anadir_imagenes}">Añadir imágenes</label>
+            <input id="fotosSubidas" type="file" th:field="*{fotosSubidas}"
+                   accept="image/*" multiple>
+            <span class="error" th:if="${#fields.hasErrors('fotosSubidas')}"
+                  th:errors="*{fotosSubidas}"></span>
+            <small id="mensaje-imagenes" th:text="#{a.aviso_editar}"></small>
+        </div>
+
+        <input type="hidden" th:field="*{id}">
+        <input class="boton" type="submit" value="GUARDAR CAMBIOS" th:value="#{a.guardar_cambios}">
+    </form>
+</div>
+
+<script th:inline="javascript">
+    const MSG_MAS_DE_CINCO = /*[[#{a.mas_de_cinco}]]*/ "";
+    const MSG_VISTA_PREVIA = /*[[#{a.vista_previa_editar}]]*/ "";
+    const imagenesActualesIniciales = Array.from(
+        document.querySelectorAll("#previsualizacion-imagenes [data-preview-existing]")
+    ).map(imagen => ({src: imagen.src, alt: imagen.alt}));
+
+    document.getElementById("fotosSubidas").addEventListener("change", function () {
+        const archivos = Array.from(this.files);
+        const archivosNuevos = archivos.slice(-5);
+        const transferencia = new DataTransfer();
+        archivosNuevos.forEach(archivo => transferencia.items.add(archivo));
+        this.files = transferencia.files;
+
+        const previsualizacion = document.getElementById("previsualizacion-imagenes");
+        const actualesAConservar = Math.max(0, 5 - archivosNuevos.length);
+        previsualizacion.replaceChildren();
+
+        imagenesActualesIniciales.slice(0, actualesAConservar).forEach(actual => {
+            const imagen = document.createElement("img");
+            imagen.src = actual.src;
+            imagen.alt = actual.alt;
+            previsualizacion.appendChild(imagen);
+        });
+        archivosNuevos.forEach(archivo => {
+            const imagen = document.createElement("img");
+            imagen.src = URL.createObjectURL(archivo);
+            imagen.alt = archivo.name;
+            previsualizacion.appendChild(imagen);
+        });
+
+        document.getElementById("mensaje-imagenes").textContent =
+            archivos.length > 5
+                ? MSG_MAS_DE_CINCO
+                : MSG_VISTA_PREVIA.replace("{0}", previsualizacion.children.length);
+    });
+</script>
+
+</body>
+</html>

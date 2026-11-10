@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="menu" class="admin-menu">
+    <div class="admin-menu__top">
+        <span class="admin-menu__brand" th:text="#{panel.administracion}">SNEAKER HOUSE · Panel de administración</span>
+        <label for="idioma-admin" class="sr-only">Idioma</label>
+        <select id="idioma-admin" class="admin-menu__language" aria-label="Idioma"
+                onchange="window.location.search='?idioma='+this.value">
+            <option value="es" th:selected="${#locale.language == 'es'}">español</option>
+            <option value="en" th:selected="${#locale.language == 'en'}">english</option>
+            <option value="fr" th:selected="${#locale.language == 'fr'}">français</option>
+        </select>
+        <a class="admin-menu__public" href="../" th:text="#{volver.tienda}">Volver a la tienda</a>
+    </div>
+    <nav class="admin-menu__links" aria-label="Gestión de la tienda">
+        <a href="gestionarZapatillas" th:text="#{admin.zapatillas}">Zapatillas</a>
+        <a href="gestionarUsuarios" th:text="#{admin.usuarios}">Usuarios</a>
+        <a href="gestionarCategorias" th:text="#{admin.categorias}">Categorías</a>
+        <a href="gestionarPedidos" th:text="#{admin.pedidos}">Pedidos</a>
+        <a th:href="@{/cerrarSesionAdmin}" th:text="#{admin.cerrar_sesion}">Cerrar sesión</a>
+    </nav>
+</div>
+
+</body>
+</html>

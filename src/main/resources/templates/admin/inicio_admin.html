@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_inicio}">Administración</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_inicio}">Bienvenido a la administracion de la tienda</h1>
+</div>
+
+</body>
+</html>

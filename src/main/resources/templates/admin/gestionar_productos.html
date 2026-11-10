@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_productos}">Gestionar zapatillas</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_productos}">listar productos, permitiendo borrar y editar</h1>
+    <p>
+        <a class="boton" href="registrarZapatilla" th:text="#{a.nuevo_producto}">nuevo producto</a>
+    </p>
+
+    <form action="gestionarZapatillas" method="get">
+        <label>
+            <span th:text="#{admin.buscar}">buscador</span>:
+            <input type="text" name="titulo" th:value="${titulo}">
+        </label>
+        <input type="submit" th:value="#{admin.buscar_boton}" value="BUSCAR">
+    </form>
+    <p>
+        <span th:text="#{admin.total_resultados}">total resultados</span>:
+        <span th:text="${total}"></span>
+    </p>
+    <p>
+        <a th:if="${anterior >= 0}"
+           th:href="@{/admin/gestionarZapatillas(titulo=${titulo}, comienzo=${anterior})}"
+           th:text="#{admin.anterior}">ANTERIOR</a>
+        &nbsp;&nbsp;&nbsp;
+        <a th:if="${siguiente < total}"
+           th:href="@{/admin/gestionarZapatillas(titulo=${titulo}, comienzo=${siguiente})}"
+           th:text="#{admin.siguiente}">SIGUIENTE</a>
+    </p>
+
+    <div class="tabla-contenedor">
+    <table class="tabla">
+        <thead>
+        <tr>
+            <th th:text="#{a.foto}">Foto</th>
+            <th th:text="#{a.marca_modelo}">Marca / Modelo</th>
+            <th class="ocultar-movil" th:text="#{a.categoria_cap}">Categoría</th>
+            <th th:text="#{a.precio_cap}">Precio</th>
+            <th th:text="#{a.talla_cap}">Talla</th>
+            <th class="ocultar-movil" th:text="#{a.color_cap}">Color</th>
+            <th class="ocultar-movil" th:text="#{a.genero_cap}">Género</th>
+            <th class="ocultar-movil" th:text="#{a.descripcion_cap}">Descripción</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="z : ${zapatillas}">
+            <td><img th:src="@{${ '../mostrar_imagen?id=' + z.id }}" /></td>
+            <td>
+                <strong th:text="${z.marca}"></strong><br>
+                <span th:text="${z.modelo}"></span>
+            </td>
+            <td class="ocultar-movil" th:text="${z.categoria.nombre}"></td>
+            <td th:text="${#numbers.formatDecimal(z.precio, 1, 2, 'COMMA')} + ' €'"></td>
+            <td th:text="${z.talla}"></td>
+            <td class="ocultar-movil" th:text="${z.color}"></td>
+            <td class="ocultar-movil" th:text="${z.genero}"></td>
+            <td class="ocultar-movil" th:text="${z.descripcion}"></td>
+            <td class="acciones">
+                <a class="boton boton--gris" th:href="@{${ 'editarZapatilla?id=' + z.id }}" th:text="#{a.editar}">EDITAR</a>
+                <a class="boton boton--rojo" th:href="@{${ 'borrarZapatilla?id=' + z.id }}"
+                   th:attr="data-confirm=#{a.confirmar_borrar_producto}"
+                   onclick="return confirm(this.dataset.confirm)"
+                   th:text="#{a.borrar}">BORRAR</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+</body>
+</html>

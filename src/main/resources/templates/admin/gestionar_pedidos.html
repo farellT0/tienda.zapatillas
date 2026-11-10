@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_pedidos}">Gestionar pedidos</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_pedidos}">gestionar pedidos</h1>
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th th:text="#{a.id}">ID</th>
+                <th th:text="#{a.usuario}">Usuario</th>
+                <th th:text="#{a.nombre_completo}">Nombre completo</th>
+                <th th:text="#{a.direccion}">Dirección</th>
+                <th th:text="#{a.estado}">Estado</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pedido : ${pedidos}">
+                <td th:text="${pedido.id}"></td>
+                <td th:text="${pedido.usuario.nombre}"></td>
+                <td th:text="${pedido.nombreCompleto}"></td>
+                <td th:text="${pedido.direccion}"></td>
+                <td th:text="#{${'a.estado_' + pedido.estado}}"></td>
+                <td>
+                    <a th:href="@{${'verDetallesPedido?id=' + pedido.id}}" th:text="#{a.ver_detalles}">ver detalles</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pedidos)}">
+                <td colspan="6" th:text="#{a.sin_pedidos}">Todavía no hay pedidos.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

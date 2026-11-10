@@ -1,0 +1,65 @@
+<!-- esto es otra plantilla para mustache -->
+
+<div class="detalle-producto bg-white rounded-xl shadow-sm overflow-hidden">
+    <div class="detalle-producto__imagen bg-stone-50 p-6">
+        <div class="detalle-galeria">
+            {{#numerosImagenes}}
+            <img class="imagen-detalle" src="mostrar_imagen?id={{id}}&numero={{.}}"
+                 alt="{{t.imagen}} {{.}} - {{marca}} {{modelo}}">
+            {{/numerosImagenes}}
+        </div>
+    </div>
+    <div class="detalle-producto__contenido p-6 flex flex-col gap-3">
+        <span class="text-xs uppercase tracking-wider text-stone-500">{{marca}}</span>
+        <h1 class="text-3xl font-black leading-tight">{{modelo}}</h1>
+        <span class="text-3xl font-black text-orange-600">{{precioTexto}} €</span>
+        <p class="text-stone-700">{{descripcion}}</p>
+
+        <table class="text-sm w-full max-w-sm">
+            <tr><td class="text-stone-500 py-1">{{t.color}}</td><td class="font-semibold">{{color}}</td></tr>
+            <tr><td class="text-stone-500 py-1">{{t.genero}}</td><td class="font-semibold">{{genero}}</td></tr>
+        </table>
+
+        <div class="detalle-compra mt-2">
+            <label for="talla-detalle">{{t.talla_eu}}</label>
+            <select id="talla-detalle" class="border border-stone-300 rounded px-2 py-1" aria-label="{{t.talla}}">
+                {{#opcionesTalla}}
+                <option value="{{valor}}" {{#seleccionada}}selected{{/seleccionada}}>{{texto}}</option>
+                {{/opcionesTalla}}
+            </select>
+            {{t.cantidad_dos_puntos}}
+            <input id="cantidad-detalle" type="number" min="1" value="1"
+                   class="w-20 border border-stone-300 rounded px-2 py-1" aria-label="{{t.cantidad}}">
+            <button class="boton-carrito"
+                    onclick="agregarProductoCarrito({{id}}, 'cantidad-detalle', 'talla-detalle')"
+                    title="{{t.anadir_carrito}}" aria-label="{{t.anadir_carrito}}: {{marca}} {{modelo}}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="9" cy="21" r="1"/>
+                    <circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                {{t.anadir_carrito}}
+            </button>
+        </div>
+        <div class="detalle-comentarios flex flex-col gap-3">
+            <h2 class="text-xl font-black">{{t.comentarios}}</h2>
+            <p id="comentario-login-requerido" class="text-sm text-stone-600" hidden>
+                {{t.login_para_comentar}}
+                <button id="identificarse-para-comentar" type="button" class="underline text-orange-700">
+                    {{t.identificarme}}
+                </button>
+            </p>
+            <form id="form-comentario" data-id="{{id}}" class="flex flex-col gap-2" hidden>
+                <textarea id="texto-comentario" rows="3" maxlength="500" required
+                          class="w-full border border-stone-300 rounded px-2 py-1 text-sm"
+                          placeholder="{{t.comentario_placeholder}} {{marca}} {{modelo}}..."
+                          aria-label="{{t.comentario}}"></textarea>
+                <button type="submit" class="boton-carrito">{{t.publicar_comentario}}</button>
+                <p id="comentario-error" class="text-sm text-red-700" role="alert"></p>
+            </form>
+            <div id="lista-comentarios" class="flex flex-col gap-3"></div>
+        </div>
+    </div>
+</div>

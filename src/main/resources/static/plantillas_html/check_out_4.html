@@ -1,0 +1,42 @@
+<section>
+    <h2 class="text-xl font-black mb-4">{{t.resumen_titulo}}</h2>
+    <div class="formulario">
+        <h3 class="font-bold mb-2">{{t.zapatillas}}</h3>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                <tr class="text-left">
+                    <th class="py-2">{{t.producto}}</th>
+                    <th class="py-2">{{t.talla}}</th>
+                    <th class="py-2">{{t.cantidad}}</th>
+                    <th class="py-2">{{t.subtotal}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#zapatillas}}
+                <tr class="border-t border-stone-200">
+                    <td class="py-2">{{marca}} {{modelo}}</td>
+                    <td class="py-2">{{talla}}</td>
+                    <td class="py-2">{{cantidad}}</td>
+                    <td class="py-2">{{subtotalTexto}} €</td>
+                </tr>
+                {{/zapatillas}}
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-3 text-right font-black">{{t.total}}: {{totalTexto}} €</p>
+
+        <h3 class="font-bold mt-5 mb-2">{{t.envio_titulo}}</h3>
+        <p>{{nombreCompleto}}</p>
+        <p>{{direccion}}, {{codigoPostal}} {{ciudad}}, {{provincia}}</p>
+        <p>{{t.telefono}}: {{telefono}}</p>
+
+        <h3 class="font-bold mt-5 mb-2">{{t.pago_titulo}}</h3>
+        <p>{{tipoTarjeta}} · {{tarjetaEnmascarada}}</p>
+        <p>{{t.titular}}: {{titularTarjeta}}</p>
+        <p>{{t.caducidad}}: {{fechaCaducidad}}</p>
+
+        <p id="checkout-error" class="text-sm text-red-700 mt-3" role="alert"></p>
+        <button id="confirmar-pedido" class="boton mt-4" type="button">{{t.confirmar_pedido}}</button>
+    </div>
+</section>

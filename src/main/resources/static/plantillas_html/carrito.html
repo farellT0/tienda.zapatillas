@@ -1,0 +1,25 @@
+<div>
+    <h2 class="text-xl font-black mb-4">{{t.carrito_titulo}}</h2>
+    <div class="tabla-carrito bg-white rounded-xl shadow-sm overflow-hidden">
+        {{#productos}}
+        <div class="flex items-center gap-4 p-4 border-b border-stone-200">
+            <img src="mostrar_imagen?id={{id}}" alt="{{marca}} {{modelo}}"
+                 style="width:80px;height:60px;object-fit:contain">
+            <div class="flex-1">
+                <div class="font-bold">{{marca}} {{modelo}}</div>
+                <div class="text-sm text-stone-600">{{t.talla}}: {{tallaTexto}} · {{t.cantidad}}: {{cantidad}}</div>
+            </div>
+            <div class="font-black text-orange-600">{{subtotalTexto}} €</div>
+            <button class="boton-carrito" type="button"
+                    onclick="eliminarProductoCarrito({{idLinea}})"
+                    aria-label="{{t.eliminar}}: {{marca}} {{modelo}} ({{t.talla}} {{tallaTexto}})">
+                {{t.eliminar}}
+            </button>
+        </div>
+        {{/productos}}
+        <div class="p-4 text-right text-lg font-black">{{t.total}}: {{totalTexto}} €</div>
+    </div>
+    {{#hayProductos}}
+    <button id="realizar_pedido" class="boton mt-4" type="button">{{t.realizar_pedido}}</button>
+    {{/hayProductos}}
+</div>

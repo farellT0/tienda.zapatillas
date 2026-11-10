@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_nueva_categoria}">Nueva categoría</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_nueva_categoria}">Introduce los datos de la nueva categoría</h1>
+
+    <form class="formulario" th:action="@{/admin/guardarCategoria}" method="post">
+        <div class="campo">
+            <label for="nombre" th:text="#{a.nombre}">Nombre</label>
+            <input id="nombre" type="text" name="nombre" th:value="${nombre}" required>
+            <span class="error" th:if="${errorNombre}" th:text="${errorNombre}"></span>
+        </div>
+
+        <div class="campo">
+            <label for="descripcion" th:text="#{a.descripcion_cat}">Descripción</label>
+            <input id="descripcion" type="text" name="descripcion" th:value="${descripcion}">
+        </div>
+
+        <button class="boton" type="submit" th:text="#{a.registrar}">REGISTRAR</button>
+    </form>
+</div>
+
+</body>
+</html>

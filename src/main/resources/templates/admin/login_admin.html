@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="#{a.titulo_login}">Acceso a administración · Sneaker House</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<main class="contenido">
+    <h1 th:text="#{a.h1_login}">Acceso a la administración</h1>
+    <p th:text="#{a.texto_login}">Introduce la contraseña para gestionar las zapatillas de Sneaker House.</p>
+
+    <form class="formulario" th:action="@{/admin/inicioAdmin}" method="post">
+        <div class="campo">
+            <label for="pass-login-admin" th:text="#{a.password}">Contraseña</label>
+            <input id="pass-login-admin" type="password" name="pass-login-admin"
+                   autocomplete="current-password" required>
+        </div>
+        <p class="error" th:if="${errorLogin}" th:text="#{a.pass_invalida}">La contraseña no es válida.</p>
+        <button class="boton" type="submit" th:text="#{a.entrar}">ENTRAR</button>
+    </form>
+
+    <p><a th:href="@{/}" th:text="#{volver.tienda}">Volver a la tienda</a></p>
+</main>
+
+</body>
+</html>

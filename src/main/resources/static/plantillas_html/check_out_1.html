@@ -1,0 +1,47 @@
+<section>
+    <h2 class="text-xl font-black mb-4">{{t.envio_titulo}}</h2>
+    <form id="checkout-paso1" class="formulario" novalidate>
+        <div class="campo">
+            <label for="checkout-nombre">{{t.nombre_completo}}</label>
+            <input id="checkout-nombre" name="nombreCompleto" type="text" required>
+        </div>
+        <div class="campo">
+            <label for="checkout-direccion">{{t.direccion}}</label>
+            <input id="checkout-direccion" name="direccion" type="text"
+                   placeholder="Calle Mayor, 10, 2.º B" required>
+        </div>
+        <div class="campo">
+            <label for="checkout-provincia">{{t.provincia}}</label>
+            <input id="checkout-provincia" name="provincia" type="text" placeholder="Madrid" required>
+        </div>
+        <div class="campo">
+            <label for="checkout-telefono">{{t.telefono}}</label>
+            <div class="flex gap-2">
+                <select id="checkout-prefijo" name="prefijoTelefono"
+                        class="border border-stone-300 rounded px-2 py-1 text-sm" aria-label="{{t.prefijo_aria}}">
+                    <option value="+34" selected>+34 ES</option>
+                    <option value="+351">+351 PT</option>
+                    <option value="+33">+33 FR</option>
+                    <option value="+49">+49 DE</option>
+                    <option value="+39">+39 IT</option>
+                    <option value="+44">+44 UK</option>
+                    <option value="+1">+1 US</option>
+                </select>
+                <input id="checkout-telefono" name="telefono" type="tel" inputmode="numeric"
+                       class="flex-1 min-w-0" pattern="[0-9]{9}" maxlength="9"
+                       placeholder="600123456" required>
+            </div>
+        </div>
+        <div class="campo">
+            <label for="checkout-codigo-postal">{{t.codigo_postal}}</label>
+            <input id="checkout-codigo-postal" name="codigoPostal" type="text" inputmode="numeric"
+                   pattern="[0-9]{5}" maxlength="5" placeholder="28001" required>
+        </div>
+        <div class="campo">
+            <label for="checkout-ciudad">{{t.ciudad}}</label>
+            <input id="checkout-ciudad" name="ciudad" type="text" placeholder="Madrid" required>
+        </div>
+        <p id="checkout-error" class="text-sm text-red-700" role="alert"></p>
+        <button class="boton" type="submit">{{t.continuar}}</button>
+    </form>
+</section>

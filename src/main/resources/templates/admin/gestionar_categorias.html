@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_categorias}">Gestionar categorías</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_categorias}">gestionar categorías</h1>
+    <p>
+        <a class="boton" href="registrarCategoria" th:text="#{a.nueva_categoria}">nueva categoría</a>
+    </p>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+
+    <div class="tabla-contenedor">
+        <table class="tabla">
+            <thead>
+            <tr>
+                <th th:text="#{a.id}">ID</th>
+                <th th:text="#{a.nombre}">Nombre</th>
+                <th th:text="#{a.descripcion_cap}">Descripción</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="categoria : ${categorias}">
+                <td th:text="${categoria.id}"></td>
+                <td th:text="${categoria.nombre}"></td>
+                <td th:text="${categoria.descripcion}"></td>
+                <td class="acciones">
+                    <form th:action="@{/admin/borrarCategoria}" method="post">
+                        <input type="hidden" name="id" th:value="${categoria.id}">
+                        <button class="boton boton--rojo" type="submit"
+                                th:attr="data-confirm=#{a.confirmar_borrar_categoria}"
+                                onclick="return confirm(this.dataset.confirm)"
+                                th:text="#{a.borrar}">BORRAR</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

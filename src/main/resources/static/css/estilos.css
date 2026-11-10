@@ -1,0 +1,387 @@
+/* estilos propios de la parte publica (ademas de tailwind) */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    min-width: 320px;
+}
+
+.formulario {
+    max-width: 560px;
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 6%);
+}
+
+.campo {
+    margin-bottom: 14px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.campo input:not([type=file]),
+.campo input[type=file] {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #c5ccd1;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.campo input[type=file] {
+    padding: 8px 0;
+}
+
+.boton {
+    display: inline-block;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #ff5a1f;
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.boton:hover {
+    background: #e64a12;
+}
+
+.formulario-publico {
+    margin-bottom: 24px;
+}
+
+header > div,
+.menu-publico,
+main {
+    width: min(100% - 32px, 1152px);
+}
+
+#zapatillas {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    top: 8px;
+}
+
+.menu-publico a,
+.menu-publico button {
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #d6d3d1;
+    text-decoration: none;
+    white-space: nowrap;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+.menu-publico a:hover,
+.menu-publico button:hover,
+.menu-publico button:focus-visible {
+    background: #292524;
+    color: white;
+}
+
+.cuenta-listas {
+    position: relative;
+}
+
+.cuenta-listas > button {
+    border: 1px solid #78716c;
+    color: white;
+    font-weight: 600;
+}
+
+.cuenta-listas__opciones {
+    position: absolute;
+    z-index: 20;
+    top: 100%;
+    right: 0;
+    display: none;
+    min-width: 190px;
+    padding: 6px;
+    border: 1px solid #d6d3d1;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 18%);
+}
+
+.cuenta-listas:hover .cuenta-listas__opciones,
+.cuenta-listas:focus-within .cuenta-listas__opciones {
+    display: grid;
+}
+
+.menu-publico .cuenta-listas__opciones button {
+    width: 100%;
+    padding: 9px 10px;
+    color: #292524;
+    text-align: left;
+}
+
+.menu-publico .cuenta-listas__opciones button:hover,
+.menu-publico .cuenta-listas__opciones button:focus-visible {
+    background: #f5f5f4;
+    color: #c2410c;
+}
+
+.menu-publico button[hidden] {
+    display: none;
+}
+
+.boton-pedidos {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 38px;
+    border: 1px solid #78716c !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+.boton-pedidos svg {
+    width: 19px;
+    height: 19px;
+}
+
+.registro-invitacion {
+    margin: 14px 0 0;
+    font-size: 14px;
+}
+
+.registro-invitacion a {
+    color: #c2410c;
+    font-weight: 600;
+}
+
+.mensaje-error {
+    margin: 0 0 14px;
+    color: #b91c1c;
+    font-size: 14px;
+}
+
+.mensaje-error[hidden] {
+    display: none;
+}
+
+.cuenta-resumen,
+.pedidos-usuario {
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 6%);
+}
+
+.cuenta-resumen h1,
+.pedidos-usuario h1 {
+    margin-bottom: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.pedido-usuario {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid #e7e5e4;
+    border-radius: 8px;
+}
+
+.pedido-usuario h2 {
+    font-weight: 600;
+}
+
+@media (hover: none) {
+    .cuenta-listas__opciones {
+        display: grid;
+    }
+}
+
+.catalogo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.tarjeta {
+    min-width: 0;
+}
+
+.tarjeta .bg-stone-50 {
+    overflow: hidden;
+}
+
+.imagen-producto {
+    display: block;
+    height: 220px;
+    width: 100%;
+    object-fit: contain;
+    padding: 0;
+    transform: scale(1.25);
+    transition: transform 0.3s;
+}
+
+.tarjeta:hover .imagen-producto {
+    transform: scale(1.35) rotate(-3deg);
+}
+
+.imagen-detalle {
+    display: block;
+    max-height: 380px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.detalle-galeria {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: 16px;
+}
+
+.detalle-galeria .imagen-detalle {
+    height: 340px;
+}
+
+.detalle-producto {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.detalle-producto__imagen {
+    min-width: 0;
+}
+
+.detalle-producto__contenido {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.detalle-compra {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.detalle-compra input,
+.tarjeta input[type=number] {
+    min-height: 40px;
+}
+
+.boton-carrito {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: #ea580c;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.boton-carrito:hover {
+    background: #c2410c;
+}
+
+@media (max-width: 900px) {
+    .catalogo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    header > div {
+        align-items: flex-start;
+    }
+
+    main {
+        padding-top: 20px;
+        padding-bottom: 24px;
+    }
+
+    .catalogo-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .imagen-producto {
+        height: 210px;
+    }
+
+    .detalle-producto {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .detalle-producto__imagen {
+        padding: 16px;
+    }
+
+    .detalle-producto__contenido {
+        padding: 20px;
+    }
+
+    .detalle-producto__contenido h1 {
+        font-size: clamp(1.7rem, 8vw, 2.25rem);
+    }
+
+    .detalle-compra {
+        align-items: stretch;
+    }
+
+    .detalle-compra .boton-carrito {
+        flex: 1 1 100%;
+    }
+}
+
+/* ficha de detalle: mas ancha, fotos grandes, comentarios debajo del carrito */
+.detalle-comentarios {
+    margin-top: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #e7e5e4;
+}
+
+@media (min-width: 1001px) {
+    .detalle-producto {
+        width: min(1700px, calc(100vw - 32px));
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    }
+
+    .detalle-galeria .imagen-detalle {
+        height: 520px;
+        max-height: 520px;
+    }
+}
+
+/* avatar del usuario */
+.avatar_usuario {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    object-fit: cover;
+}

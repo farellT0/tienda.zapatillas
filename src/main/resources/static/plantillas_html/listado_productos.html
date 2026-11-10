@@ -1,0 +1,56 @@
+<!--  esta es la nomenclatura de mustache.js
+ con la etiqueta de abajo indicamos que el html que haya dentro
+ se pueda usar para aplicarlo sobre cada elemento
+ de un array -->
+<div class="mb-4 flex flex-wrap items-center gap-4 text-sm">
+    <label>{{t.buscar_label}}
+        <input type="text" id="texto_buscador"
+               class="border border-stone-300 rounded px-2 py-1 ml-1">
+    </label>
+    <span>{{t.resultados}} <span id="total_resultados"></span></span>
+    <span>
+        <a id="enlace_anterior" href="#" class="underline">{{t.anterior}}</a>
+        &nbsp;
+        <a id="enlace_siguiente" href="#" class="underline">{{t.siguiente}}</a>
+    </span>
+</div>
+<div class="catalogo-grid">
+    {{#zapatillas}}
+    <div class="tarjeta bg-white rounded-xl overflow-hidden shadow-sm flex flex-col">
+        <div class="bg-stone-50 flex justify-center cursor-pointer" onclick="mostrar_detalles({{id}})">
+            <img class="imagen-producto" src="mostrar_imagen?id={{id}}" />
+        </div>
+        <div class="p-4 flex flex-col gap-1 flex-1">
+            <span class="text-xs uppercase tracking-wider text-stone-500">{{marca}} · {{genero}}</span>
+            <span class="font-bold text-lg leading-tight">{{modelo}}</span>
+            <span class="text-sm text-stone-600">{{t.color}}: {{color}}</span>
+            <span class="text-sm text-stone-600">{{t.categoria}}: {{categoriaNombre}}</span>
+            <span class="text-xl font-black text-orange-600 mt-1">{{precioTexto}} €</span>
+            <div class="mt-auto pt-3 flex items-center gap-2">
+                <a href="#" class="text-sm underline" onclick="mostrar_detalles({{id}})" >{{t.ver_detalles}}</a>
+                <select id="talla-producto-{{id}}" class="border border-stone-300 rounded px-2 py-1 text-sm"
+                        aria-label="{{t.talla}}">
+                    {{#opcionesTalla}}
+                    <option value="{{valor}}" {{#seleccionada}}selected{{/seleccionada}}>{{texto}}</option>
+                    {{/opcionesTalla}}
+                </select>
+                <input id="cantidad-producto-{{id}}" type="number" min="1" value="1"
+                       class="ml-auto w-16 border border-stone-300 rounded px-2 py-1 text-sm"
+                       aria-label="{{t.cantidad}}">
+                <button class="boton-carrito"
+                        onclick="agregarProductoCarrito({{id}}, 'cantidad-producto-{{id}}', 'talla-producto-{{id}}')"
+                        title="{{t.anadir_carrito}}" aria-label="{{t.anadir_carrito}}: {{marca}} {{modelo}}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                         stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="9" cy="21" r="1"/>
+                        <circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                    {{t.anadir}}
+                </button>
+            </div>
+        </div>
+    </div>
+    {{/zapatillas}}
+</div>

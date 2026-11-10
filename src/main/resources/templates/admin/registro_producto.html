@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es" th:lang="${#locale.language}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{a.titulo_nueva_zapatilla}">Nueva zapatilla</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+
+<div th:insert="~{fragments/general :: menu}"></div>
+
+<div class="contenido">
+    <h1 th:text="#{a.h1_nueva_zapatilla}">Introduce los datos del nuevo producto</h1>
+
+    <form class="formulario" action="#" th:action="guardarZapatilla" th:object="${nueva}"
+          method="post" enctype="multipart/form-data">
+
+        <div class="fila">
+            <div class="campo">
+                <label th:text="#{a.marca}">marca</label>
+                <input type="text" th:field="*{marca}">
+                <span class="error" th:if="${#fields.hasErrors('marca')}" th:errors="*{marca}"></span>
+            </div>
+            <div class="campo">
+                <label th:text="#{a.modelo}">modelo</label>
+                <input type="text" th:field="*{modelo}">
+                <span class="error" th:if="${#fields.hasErrors('modelo')}" th:errors="*{modelo}"></span>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="campo">
+                <label th:text="#{a.precio}">precio</label>
+                <input type="text" th:field="*{precio}">
+                <span class="error" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></span>
+            </div>
+            <div class="campo">
+                <label th:text="#{a.talla}">talla</label>
+                <input type="text" th:field="*{talla}">
+                <span class="error" th:if="${#fields.hasErrors('talla')}" th:errors="*{talla}"></span>
+            </div>
+        </div>
+
+        <div class="fila">
+            <div class="campo">
+                <label th:text="#{a.color}">color</label>
+                <input type="text" th:field="*{color}">
+                <span class="error" th:if="${#fields.hasErrors('color')}" th:errors="*{color}"></span>
+            </div>
+            <div class="campo">
+                <label th:text="#{a.genero}">genero</label>
+                <input type="text" th:field="*{genero}">
+                <span class="error" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></span>
+            </div>
+        </div>
+
+        <div class="campo">
+            <label th:text="#{a.categoria}">categoria</label>
+            <select th:field="*{idCategoria}">
+                <option th:each="c : ${categorias}" th:text="${c.nombre}" th:value="${c.id}"></option>
+            </select>
+        </div>
+
+        <div class="campo">
+            <label th:text="#{a.descripcion}">descripcion</label>
+            <input type="text" th:field="*{descripcion}">
+        </div>
+
+        <div class="campo">
+            <label for="fotosSubidas" th:text="#{a.imagenes_max}">Imágenes (máximo 5)</label>
+            <input id="fotosSubidas" type="file" th:field="*{fotosSubidas}"
+                   accept="image/*" multiple>
+            <span class="error" th:if="${#fields.hasErrors('fotosSubidas')}"
+                  th:errors="*{fotosSubidas}"></span>
+            <div id="previsualizacion-imagenes" class="imagenes-actuales"></div>
+            <small id="mensaje-imagenes" th:text="#{a.aviso_nueva}">Selecciona al menos una imagen. Se conservarán las últimas cinco.</small>
+        </div>
+
+        <input class="boton" type="submit" value="REGISTRAR" th:value="#{a.registrar}">
+    </form>
+</div>
+
+<script th:inline="javascript">
+    const MSG_MAS_DE_CINCO = /*[[#{a.mas_de_cinco}]]*/ "";
+    const MSG_SELECCIONADAS = /*[[#{a.seleccionadas}]]*/ "";
+    const selectorImagenes = document.getElementById("fotosSubidas");
+    selectorImagenes.addEventListener("change", function () {
+        const archivos = Array.from(this.files);
+        const archivosFinales = archivos.slice(-5);
+        const transferencia = new DataTransfer();
+        archivosFinales.forEach(archivo => transferencia.items.add(archivo));
+        this.files = transferencia.files;
+
+        const previsualizacion = document.getElementById("previsualizacion-imagenes");
+        previsualizacion.replaceChildren();
+        archivosFinales.forEach(archivo => {
+            const imagen = document.createElement("img");
+            imagen.src = URL.createObjectURL(archivo);
+            imagen.alt = archivo.name;
+            previsualizacion.appendChild(imagen);
+        });
+
+        document.getElementById("mensaje-imagenes").textContent =
+            archivos.length > 5
+                ? MSG_MAS_DE_CINCO
+                : MSG_SELECCIONADAS.replace("{0}", archivosFinales.length);
+    });
+</script>
+
+</body>
+</html>
