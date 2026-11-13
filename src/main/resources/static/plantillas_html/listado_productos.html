@@ -8,11 +8,6 @@
                class="border border-stone-300 rounded px-2 py-1 ml-1">
     </label>
     <span>{{t.resultados}} <span id="total_resultados"></span></span>
-    <span>
-        <a id="enlace_anterior" href="#" class="underline">{{t.anterior}}</a>
-        &nbsp;
-        <a id="enlace_siguiente" href="#" class="underline">{{t.siguiente}}</a>
-    </span>
 </div>
 <div class="catalogo-grid">
     {{#zapatillas}}
@@ -54,3 +49,4 @@
     </div>
     {{/zapatillas}}
 </div>
+<nav id="paginacion" class="paginacion" aria-label="Paginación"></nav>

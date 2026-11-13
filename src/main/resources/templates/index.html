@@ -208,7 +208,7 @@
     let comienzo_resultados = 0
     let enfocar_buscador = false
     let ultimaConsultaZapatillas = 0
-    const RESULTADOS_POR_PAGINA = 10
+    const RESULTADOS_POR_PAGINA = 9
 
     function mostrar_zapatillas(){
         const consulta = ++ultimaConsultaZapatillas
@@ -219,14 +219,18 @@
             if (consulta !== ultimaConsultaZapatillas) {
                 return
             }
+            if (json.zapatillas.length === 0 && comienzo_resultados > 0) {
+                // la pagina ya no existe (por ejemplo, tras borrar productos): volvemos a la primera
+                comienzo_resultados = 0
+                mostrar_zapatillas()
+                return
+            }
             const resultadoMustache = pintar(plantilla_productos, {
                 zapatillas: json.zapatillas.map(preparar)
             })
             $("#contenedor").html(resultadoMustache)
             $("#total_resultados").text(json.totalZapatillas)
-            $("#enlace_anterior").toggle(comienzo_resultados > 0)
-            $("#enlace_siguiente").toggle(
-                comienzo_resultados + RESULTADOS_POR_PAGINA < json.totalZapatillas)
+            pintarPaginacion(json.totalZapatillas)
             const buscador = document.getElementById("texto_buscador")
             buscador.value = texto_a_buscar
             if (enfocar_buscador) {
@@ -241,20 +245,31 @@
         })
     }//end mostrar_zapatillas
 
+    // paginacion numerada debajo del catalogo
+    function pintarPaginacion(total){
+        const paginas = Math.ceil(total / RESULTADOS_POR_PAGINA)
+        const actual = Math.floor(comienzo_resultados / RESULTADOS_POR_PAGINA) + 1
+        let html = ""
+        if (paginas > 1) {
+            for (let n = 1; n <= paginas; n++) {
+                html += '<button type="button" class="pag-boton' + (n === actual ? ' pag-activa' : '')
+                    + '" data-pagina="' + n + '"' + (n === actual ? ' aria-current="page"' : '')
+                    + ' aria-label="' + n + '">' + n + '</button>'
+            }
+        }
+        $("#paginacion").html(html)
+    }
+
+    $("#contenedor").on("click", ".pag-boton:not([disabled])", function(){
+        comienzo_resultados = (Number($(this).data("pagina")) - 1) * RESULTADOS_POR_PAGINA
+        mostrar_zapatillas()
+        window.scrollTo({top: 0, behavior: "smooth"})
+    })
+
     $("#contenedor").on("keyup", "#texto_buscador", function(){
         texto_a_buscar = $(this).val()
         comienzo_resultados = 0
         enfocar_buscador = true
-        mostrar_zapatillas()
-    })
-    $("#contenedor").on("click", "#enlace_anterior", function(e){
-        e.preventDefault()
-        comienzo_resultados = Math.max(0, comienzo_resultados - RESULTADOS_POR_PAGINA)
-        mostrar_zapatillas()
-    })
-    $("#contenedor").on("click", "#enlace_siguiente", function(e){
-        e.preventDefault()
-        comienzo_resultados += RESULTADOS_POR_PAGINA
         mostrar_zapatillas()
     })
 

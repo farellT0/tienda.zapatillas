@@ -26,7 +26,7 @@ public class ZapatillasREST {
             @RequestParam(name = "comienzo", defaultValue = "0") Integer comienzo) {
         InfoZapatillas info = new InfoZapatillas();
         info.setTotalZapatillas(servicioZapatillas.obtenerTotalZapatillas(texto));
-        info.setZapatillas(servicioZapatillas.obtenerZapatillasPorTexto(texto, comienzo, 10));
+        info.setZapatillas(servicioZapatillas.obtenerZapatillasPorTexto(texto, comienzo, 9));
         return info;
     }
 
